@@ -1,6 +1,7 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from 'zod';
+import { PromptTemplate } from 'langchain/prompts';
 
 const parser = StructuredOutputParser.fromZodSchema(
     z.object({
@@ -13,8 +14,25 @@ const parser = StructuredOutputParser.fromZodSchema(
     })
 )
 
+const getPrompt = async (content) => {
+    const format_instructions = parser.getFormatInstructions()
+    const prompt = new PromptTemplate({
+        template:
+          'Analyze the following journal entry. Follow the instructions and format your response to match the format instructions, no matter what! \n{format_instructions}\n{entry}',
+        inputVariables: ['entry'],
+        partialVariables: { format_instructions },
+      })
+    
+      const input = await prompt.format({
+        entry: content,
+      })
+    console.log(input)
+    return input
+}
+
 export const analyze = async (prompt) => {
+    const input = await getPrompt(prompt)
     const model = new ChatOpenAI({temperature: 0, modelName: 'gpt-3.5-turbo'})
-    const result = await model.call([{ role: 'user', content: prompt }])
+    const result = await model.call(input)
     console.log(result)
 }
