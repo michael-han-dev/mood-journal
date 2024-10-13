@@ -7,9 +7,19 @@ const NewEntryCard = () => {
     const router = useRouter()
 
     const handleOnClick = async () => {
-        const data = await createNewEntry()
-        router.push(`/journal/${data.id}`)
-    }
+      try {
+          const data = await createNewEntry();
+  
+          if (data && data.entry && data.entry.id) {
+              router.push(`/journal/${data.entry.id}`);
+          } else {
+              console.error('Entry ID not found in the response:', data);
+          }
+      } catch (error) {
+          console.error('Error creating new entry:', error);
+      }
+  };
+  
 
     return (
         <div className="cursor-pointer overflow-hidden rounded-lg bg-white shadow">

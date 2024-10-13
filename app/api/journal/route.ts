@@ -5,23 +5,29 @@ import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 
 export const POST = async () => {
-    const user = await getUserFromClerkID()
-    const entry = await prisma.journalEntry.create({
-        data: {
-            userId: user.id,
-            content: 'Write about your day here!',
-        },
-    })
-    const analysis = await analyze(entry.content);
+    try {
+        const user = await getUserFromClerkID();
+        const entry = await prisma.journalEntry.create({
+            data: {
+                userId: user.id,
+                content: 'Write about your day here!',
+            },
+        });
 
-    const savedAnalysis = await prisma.analysis.create({
-        data: {
-            entryId: entry.id,
-            ...analysis,
-        },
-    })
+        const analysis = await analyze(entry.content);
 
-    revalidatePath('/journal')
+        const savedAnalysis = await prisma.analysis.create({
+            data: {
+                entryId: entry.id,
+                ...analysis,
+            },
+        });
 
-    return NextResponse.json({ entry, analysis : savedAnalysis })
-}
+        revalidatePath('/journal');
+
+        return NextResponse.json({ entry, analysis: savedAnalysis });
+    } catch (error) {
+        console.error('Error in POST route:', error);
+        return NextResponse.error();
+    }
+};
