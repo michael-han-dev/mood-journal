@@ -1,7 +1,7 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from 'zod';
-import { PromptTemplate } from 'langchain/prompts';
+import { PromptTemplate } from '@langchain/core/prompts';
 
 const parser = StructuredOutputParser.fromZodSchema(
     z.object({
@@ -10,7 +10,7 @@ const parser = StructuredOutputParser.fromZodSchema(
         subject: z.string().describe('the subject of the journal entry.'),
         negative: z.boolean().describe('is the journal entry negative? (i.e does it contain negative emotions?).'),
         color: z.string().describe('a hexidecimal color code that represents the mood of the entry. Example #0101fe for blue representing happiness.'),
-        sentimentScore: z.number().describe('sentiment of the text and rated on a scale from -10 to 10, where -10 is extremely negative, 0 is neutral, and 10 is extremely positive.'),
+        //sentimentScore: z.number().describe('sentiment of the text and rated on a scale from -10 to 10, where -10 is extremely negative, 0 is neutral, and 10 is extremely positive.'),
     })
 )
 
@@ -33,6 +33,12 @@ const getPrompt = async (content) => {
 export const analyze = async (prompt) => {
     const input = await getPrompt(prompt)
     const model = new ChatOpenAI({temperature: 0, modelName: 'gpt-3.5-turbo'})
-    const result = await model.call(input)
+    const result = await model.call([{ role: 'user', content: input }])
+
+    try{
+      return parser.parse(result.content)
+    } catch(e){
+      console.log(e)
+    }
     console.log(result)
 }
