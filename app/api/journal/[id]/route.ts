@@ -5,21 +5,14 @@ import { NextResponse } from "next/server";
 
 export const PATCH = async (request, context) => {
     try {
-        // Await the params from context
-        const { params } = context;
-        
-        // Ensure request body is awaited properly
-        const { content } = await request.json();
-        
-        // Get user from Clerk
-        const user = await getUserFromClerkID();
-        
-        // Update the journal entry
+        const { params } = context;       
+        const { content } = await request.json(); 
+        const user = await getUserFromClerkID();       
         const updatedEntry = await prisma.journalEntry.update({
             where: {
                 userId_id: {
                     userId: user.id,
-                    id: params.id, // Ensure params is accessed correctly
+                    id: params.id,
                 },
             },
             data: {
@@ -27,10 +20,8 @@ export const PATCH = async (request, context) => {
             },
         });
         
-        // Analyze the updated content
         const analysis = await analyze(updatedEntry.content);
         
-        // Upsert analysis data
         if (analysis) {
             await prisma.analysis.upsert({
                 where: {
