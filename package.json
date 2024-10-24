@@ -6,10 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest"
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.6.3",
+    "@clerk/nextjs": "^5.7.5",
     "@langchain/openai": "^0.3.5",
     "@neondatabase/serverless": "^0.9.5",
     "@prisma/adapter-neon": "^5.20.0",
