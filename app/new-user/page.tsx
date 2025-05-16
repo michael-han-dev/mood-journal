@@ -5,6 +5,11 @@ import { redirect } from 'next/navigation'
 const createNewUser = async () => {
     const user = await currentUser()
     console.log(user)
+    
+    if (!user) {
+      redirect('/sign-in')
+      return
+    }
   
     const match = await prisma.user.findUnique({
       where: {

@@ -15,7 +15,9 @@ const getEntries = async () => {
         orderBy: {
             createdAt: 'desc',
         },
-        
+        include: {
+            analysis: true,
+        }
     })
     return entries
 }
@@ -32,7 +34,7 @@ const JournalPage = async () => {
             <NewEntryCard />
             {entries.map((entry) => ( 
                 <Link href={`/journal/${entry.id}`} key={entry.id}>
-                    <EntryCard  entry={entry} />
+                    <EntryCard entry={entry} />
                 </Link>
             ))}
             </div>

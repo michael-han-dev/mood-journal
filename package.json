@@ -10,11 +10,12 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.7.5",
+    "@clerk/nextjs": "^6.19.4",
     "@langchain/openai": "^0.3.5",
     "@neondatabase/serverless": "^0.9.5",
     "@prisma/adapter-neon": "^5.20.0",
     "@prisma/client": "^5.20.0",
+    "@vercel/analytics": "^1.5.0",
     "langchain": "^0.3.2",
     "next": "^15.0.0-canary.188",
     "react": "^18",
